@@ -16,7 +16,7 @@
 </main><footer><span>© 2026 SM MARWAR · Sakur Khan Massa · All Rights Reserved</span><a href="#home">Back to top ↑</a><small>Made with ❤️ by <strong>JanzCreativeStudio</strong></small></footer><script src="script.js"></script>
 <script>
 document.querySelectorAll('.profile-photo-wrap img, .gallery-item img').forEach(function(img){
-  const base = img.getAttribute('src').replace(/\\.(png|jpe?g|webp|gif)$/i, '');
+  const base = img.getAttribute('src').split('.').slice(0, -1).join('.');
   const extensions = ['png','jpg','jpeg','webp','gif','JPG','JPEG'];
   let attempt = 0;
   img.onerror = function(){
