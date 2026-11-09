@@ -10,7 +10,16 @@
 <section id="experience" class="section"><div class="section-head"><p class="eyebrow">03 / EXPERIENCE</p><h2>Work &amp; <span>Experience.</span></h2></div><div class="simple-grid"><div><b>01</b><h3>Teaching Experience</h3><p>2 years of teaching experience with practical classroom and student-learning exposure.</p></div><div><b>02</b><h3>eMitra Work</h3><p>Experience working with eMitra services and digital public-service related work.</p></div><div><b>03</b><h3>Video Editing &amp; Content Creation</h3><p>Video editing, content creation and creative digital media work.</p></div></div></section>
 <section id="skills" class="section"><div class="section-head"><p class="eyebrow">04 / SKILLS &amp; INTERESTS</p><h2>What I <span>Know.</span></h2></div><div class="simple-grid"><div><b>01</b><h3>Digital &amp; Technology</h3><p>RSCIT, computer skills, web, social media and modern digital tools.</p></div><div><b>02</b><h3>Islamic Knowledge</h3><p>I can read Qur'an Sharif and Islamic books, with an interest in Islamic learning.</p></div><div><b>03</b><h3>Creative Work</h3><p>Video editing, content creation, photography and visual creativity.</p></div><div><b>04</b><h3>Government Teacher Goal</h3><p>Education is currently continuing through B.Ed. preparation to build a career as a government teacher.</p></div></div></section>
 <section id="spiritual" class="section"><div class="section-head"><p class="eyebrow">05 / RUHANI REHNUMAI</p><h2>Spiritual <span>Guidance.</span></h2></div><div class="about-text"><p>Deen aur ruhani zindagi mein rehnumai, adab aur achhi taleem meri personal journey ka ek hissa hai.</p><p>Apne Peer/Murshid ke liye aqeedat aur ehtram ko ek saadah, ba-waqar aur adab ke saath represent kiya gaya hai.</p></div></section>
-<section id="gallery" class="section gallery-section"><div class="section-head"><p class="eyebrow">06 / GALLERY</p><h2>Photo <span>Gallery.</span></h2></div><p class="gallery-intro">Explore moments, memories and experiences in my photo gallery.</p><div class="actions"><a class="btn primary" href="gallery.html">Open Photo Gallery ↗</a></div></section>
+<section id="gallery" class="section gallery-section">
+<div class="section-head"><p class="eyebrow">06 / GALLERY</p><h2>Photo <span>Gallery.</span></h2></div>
+<p class="gallery-intro">Explore moments, memories and experiences.</p>
+<p id="gallery-status" class="gallery-status" role="status">Loading photos…</p>
+<div id="gallery-grid" class="gallery-grid" aria-live="polite"></div>
+</section>
+<div id="image-viewer" class="image-viewer" aria-hidden="true">
+<button class="viewer-close" type="button" aria-label="Close image">×</button>
+<img id="viewer-image" alt="Selected gallery photo">
+</div>
 <section id="social" class="section social-section"><div class="section-head"><p class="eyebrow">07 / CONNECT</p><h2>Social <span>Presence.</span></h2></div><div class="social-list"><a href="https://www.instagram.com/sm_marwar_/?xtok=ZDFnd2xrZTRsdDMw" target="_blank" rel="noopener noreferrer"><span>Instagram</span><small>@sm_marwar_</small><b>↗</b></a><a href="https://facebook.com/share/19irETdjfN" target="_blank" rel="noopener noreferrer"><span>Facebook</span><small>Facebook Profile</small><b>↗</b></a></div></section>
 <section id="contact" class="section contact"><p class="eyebrow">08 / CONTACT</p><h2>Let's <span>Connect.</span></h2><p>For enquiries, collaboration or a professional connection, feel free to get in touch.</p><div class="actions"><a class="btn primary" href="mailto:shkurshindi@gmail.com">Email Me</a></div></section>
 </main><footer><span>© 2026 SM MARWAR · All Rights Reserved</span><a href="#home">Back to top ↑</a><small>Made with ❤️ by <strong>JanzCreativeStudio</strong></small></footer><script src="script.js"></script>
@@ -28,4 +37,27 @@ document.querySelectorAll('.profile-photo-wrap img').forEach(function(img){
     }
   };
 });
+</script><script>
+(() => {
+ const owner="smmarwar",repo="smmarwar",folder="gallery/photos";
+ const grid=document.getElementById("gallery-grid"),status=document.getElementById("gallery-status");
+ const viewer=document.getElementById("image-viewer"),viewerImage=document.getElementById("viewer-image");
+ const close=()=>{viewer.classList.remove("open");viewer.setAttribute("aria-hidden","true");viewerImage.src="";document.body.classList.remove("viewer-open");};
+ document.querySelector(".viewer-close").addEventListener("click",close);
+ viewer.addEventListener("click",e=>{if(e.target===viewer)close();});
+ document.addEventListener("keydown",e=>{if(e.key==="Escape")close();});
+ fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${folder}`,{headers:{Accept:"application/vnd.github+json"}})
+ .then(r=>{if(!r.ok)throw new Error("Gallery folder not available");return r.json();})
+ .then(files=>{
+  const photos=files.filter(f=>f.type==="file"&&/\.(jpe?g|png|webp|gif|avif)$/i.test(f.name)).sort((a,b)=>a.name.localeCompare(b.name,undefined,{numeric:true}));
+  status.textContent=photos.length?photos.length+" photos":"Photos will appear here after you upload them.";
+  photos.forEach(file=>{
+   const figure=document.createElement("figure");figure.className="gallery-item";
+   const img=document.createElement("img");img.src=file.download_url;img.alt="SM MARWAR gallery photo";img.loading="lazy";img.decoding="async";
+   img.addEventListener("click",()=>{viewerImage.src=img.src;viewer.classList.add("open");viewer.setAttribute("aria-hidden","false");document.body.classList.add("viewer-open");});
+   figure.append(img);grid.append(figure);
+  });
+ })
+ .catch(()=>{status.textContent="Gallery photos could not be loaded. Please try again later.";});
+})();
 </script></body></html>
