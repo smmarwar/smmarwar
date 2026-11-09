@@ -1,31 +1,46 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="SM MARWAR photo gallery">
-  <title>Photo Gallery | SM MARWAR</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="gallery.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="SM MARWAR photo gallery">
+<title>Photo Gallery | SM MARWAR</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box}html{background:#080808;color:#f5f5f5}body{margin:0;font-family:Inter,system-ui,sans-serif;line-height:1.6}.topbar{height:76px;padding:0 7%;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #222;background:#0b0b0b}.brand{font-weight:800;font-size:20px;color:#fff;text-decoration:none}.brand span,h1 span{color:#9cff00}.back{color:#aaa;text-decoration:none;font-size:13px}.back:hover{color:#9cff00}.wrap{max-width:1320px;margin:auto;padding:80px 6% 110px}.eyebrow{font-size:11px;letter-spacing:3px;color:#9cff00;font-weight:700}h1{font-size:clamp(48px,8vw,88px);line-height:1;margin:15px 0;letter-spacing:-5px}.intro{color:#888;margin:0 0 35px}.status{font-size:13px;color:#999;margin:25px 0}.gallery{columns:3 260px;column-gap:16px}.photo{break-inside:avoid;margin:0 0 16px;background:#111;border:1px solid #242424;border-radius:5px;overflow:hidden}.photo img{display:block;width:100%;height:auto;object-fit:contain;transition:transform .35s ease}.photo:hover img{transform:scale(1.015)}.photo figcaption{padding:9px 12px;color:#777;font-size:11px;overflow-wrap:anywhere}.empty{padding:35px 24px;border:1px dashed #444;text-align:center;background:#101010;border-radius:6px}.empty h2{margin:0 0 8px}.empty p{color:#999;font-size:14px}.empty code{color:#c7ff77}footer{text-align:center;border-top:1px solid #222;padding:25px;color:#666;font-size:12px}@media(max-width:600px){.topbar{padding:0 5%}.wrap{padding:60px 5% 80px}h1{letter-spacing:-3px}.gallery{columns:2 145px;column-gap:10px}.photo{margin-bottom:10px}}
+</style>
 </head>
 <body>
-  <header class="topbar">
-    <a class="brand" href="index.html">SM <span>MARWAR</span></a>
-    <a class="back" href="index.html">← Back to website</a>
-  </header>
-  <main class="wrap">
-    <p class="eyebrow">SM MARWAR / PHOTOS</p>
-    <h1>Photo <span>Gallery.</span></h1>
-    <p class="intro">A collection of moments, memories and experiences.</p>
-    <p id="status" class="status" role="status">Loading photos…</p>
-    <div id="gallery" class="gallery" aria-live="polite"></div>
-    <div id="empty" class="empty" hidden>
-      <h2>Your gallery is ready</h2>
-      <p>Upload JPG, JPEG, PNG, WEBP or GIF photos into <code>gallery/photos/</code> in your GitHub repository. They will appear here automatically.</p>
-    </div>
-  </main>
-  <footer>© 2026 SM MARWAR · Made with ❤️ by JanzCreativeStudio</footer>
-  <script src="gallery.js"></script>
+<header class="topbar"><a class="brand" href="index.html">SM <span>MARWAR</span></a><a class="back" href="index.html">← Back to website</a></header>
+<main class="wrap">
+<p class="eyebrow">SM MARWAR / PHOTOS</p><h1>Photo <span>Gallery.</span></h1>
+<p class="intro">A collection of moments, memories and experiences.</p>
+<p id="status" class="status" role="status">Loading photos…</p>
+<div id="gallery" class="gallery" aria-live="polite"></div>
+<div id="empty" class="empty" hidden><h2>Your gallery is ready</h2><p>Upload JPG, JPEG, PNG, WEBP or GIF photos into <code>gallery/photos/</code> in your GitHub repository. They will appear here automatically.</p></div>
+</main>
+<footer>© 2026 SM MARWAR · Made with ❤️ by JanzCreativeStudio</footer>
+<script>
+(() => {
+ const owner="smmarwar", repo="smmarwar", folder="gallery/photos";
+ const gallery=document.getElementById("gallery"), status=document.getElementById("status"), empty=document.getElementById("empty");
+ const allowed=/\.(jpe?g|png|webp|gif|avif)$/i;
+ fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${folder}`,{headers:{Accept:"application/vnd.github+json"}})
+ .then(response=>{if(!response.ok)throw new Error("Could not read photo folder");return response.json()})
+ .then(files=>{
+  const photos=files.filter(file=>file.type==="file"&&allowed.test(file.name)).sort((a,b)=>a.name.localeCompare(b.name,undefined,{numeric:true}));
+  status.textContent=photos.length?photos.length+" photo(s)":"";
+  empty.hidden=photos.length>0;
+  photos.forEach(file=>{
+   const figure=document.createElement("figure");figure.className="photo";
+   const img=document.createElement("img");img.src=file.download_url;img.alt=file.name.replace(/\.[^.]+$/,"").replace(/[-_]/g," ");img.loading="lazy";img.decoding="async";
+   const caption=document.createElement("figcaption");caption.textContent=img.alt;
+   figure.append(img,caption);gallery.append(figure);
+  });
+ })
+ .catch(()=>{status.textContent="Photos could not be loaded. Check your internet connection and try again.";empty.hidden=false;});
+})();
+</script>
 </body>
 </html>
