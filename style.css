@@ -4,3 +4,18 @@
 .profile-photo-wrap.empty:before{content:"Upload image.png";color:#888;font-size:13px;letter-spacing:1px}
 .gallery-item.empty{display:grid;place-items:center;min-height:220px;background:#101010;border:1px dashed #444}
 .gallery-item.empty:before{content:"Add your gallery photo";color:#777;font-size:12px;letter-spacing:1px}
+
+/* Gallery: original photo proportions, no hover zoom, no filenames */
+.gallery-section{max-width:1200px}
+.gallery-intro{color:#888;margin:-25px 0 25px}
+.gallery-status{color:#777;font-size:13px;margin:18px 0}
+.gallery-grid{display:block;columns:3 250px;column-gap:14px}
+.gallery-item{display:block;break-inside:avoid;margin:0 0 14px;overflow:hidden;background:#111;border:1px solid #242424;border-radius:3px;cursor:zoom-in}
+.gallery-item img{display:block;width:100%;height:auto;max-height:none;object-fit:contain;transition:none;filter:none}
+.gallery-item:hover img{transform:none;filter:none}
+.image-viewer{position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,.94);display:none;align-items:center;justify-content:center;padding:55px 24px 24px}
+.image-viewer.open{display:flex}
+.image-viewer img{max-width: min(94vw,1400px);max-height:88vh;width:auto;height:auto;object-fit:contain;box-shadow:0 10px 50px rgba(0,0,0,.5);cursor:default}
+.viewer-close{position:absolute;top:15px;right:24px;border:0;background:transparent;color:#fff;font-size:42px;line-height:1;cursor:pointer}
+body.viewer-open{overflow:hidden}
+@media(max-width:700px){.gallery-grid{columns:2 140px;column-gap:9px}.gallery-item{margin-bottom:9px}.image-viewer{padding:55px 10px 15px}}
